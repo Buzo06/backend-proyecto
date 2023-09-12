@@ -61,8 +61,39 @@ app.post('/create', async (req, res)=>{
     }
 })
 
-app.get('/delete/:id', async(req,res)=>{
+app.get('/delete/:id', async(req,res) =>{
+    console.log('@@@ param => ', req.params.id)
+    const id = req.params.id
+    try{
+        await deleteDoc(doc(db, 'Users', id))
+        res.end({
+            'msg': 'user deleted'
+        })
+    }catch (error){
+        res.send({
+        'msg': 'error',
+        'data': error
+        })
+    }
+})
 
+app.get('/get-update/:id', async (req, res) =>{
+    
+    const id = req.params.id
+
+    const userRef = doc(db, 'Users', id)
+    const user = await getDoc(userRef)
+
+    if (user.exists()){
+        res.send({
+            'msg': 'success',
+            'data': user.data()
+        })
+    } else{
+        res.send({
+            'msg': 'user doesnt exist'
+        })
+    }
 })
 
 //prendemos el servidor
